@@ -1,4 +1,4 @@
-from peewee import SqliteDatabase, Model, IntegerField, TextField, DateTimeField
+from peewee import SqliteDatabase, Model, TextField, DateTimeField
 
 database = SqliteDatabase('gigFinder.db')
 
@@ -7,12 +7,15 @@ class GigFinder(Model):
         database = database
 
 class Gigs(GigFinder):
-    website_supplied_id = TextField
+    website_supplied_id = TextField()
     name = TextField(null=True, default=None)
     url = TextField(null=True)
     location = TextField(null=True)
     datetime = DateTimeField(null=True)
     details = TextField(null=True)
+
+def get_recent_gigs(date):
+    
 
 def insert_into_db(data):
     with database.atomic():
