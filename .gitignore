@@ -107,4 +107,6 @@ target/
 
 # Created by .ignore support plugin (hsz.mobi)
 
-gigFinder.db
+gigFinder.db*
+
+gigs.db*

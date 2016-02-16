@@ -1,19 +1,28 @@
-from flask import Flask
-from db import insert_into_db
-from tasks import make_celery
+from flask import Flask, jsonify
 import settings
-from craigslist import scraper
+from db import get_recent_gigs
+import tasks
+from json_schema import GigSchema
+from craigslist import  craigslist_locations
 
 app = Flask(__name__)
 app.config.from_object(settings)
 
-celery = make_celery(app)
 
-@celery.task
-def celery_craigslist_task(craigslist_locations):
-    insert_into_db(scraper.craigslist_searcher(craigslist_locations))
+@app.route('/gigs/<provider>/')
+@app.route('/gigs/')
+def gigs(provider=None):
+    gigs = get_recent_gigs()
+    schema = GigSchema(many=True)
+    result = schema.dump(list(gigs))
+    return jsonify({'gigs': result.data})
 
+
+@app.route('/update_craigslist/')
+def update_craigslist():
+    tasks.celery_craigslist_task.delay(craigslist_locations.locations)
+    return "Craigslist update process run!"
 
 if __name__ == "__main__":
     port = 5555
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(port=port, debug=True)

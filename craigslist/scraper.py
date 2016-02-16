@@ -3,6 +3,7 @@ from urllib import parse
 from bs4 import BeautifulSoup
 import settings
 
+
 def get_craigslist_post_details(url):
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'lxml')

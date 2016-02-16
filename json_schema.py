@@ -1,5 +1,6 @@
 from marshmallow import Schema, fields
 
+
 class GigSchema(Schema):
     id = fields.Int(dump_only=True)
     website_supplied_id = fields.Str(required=False)
