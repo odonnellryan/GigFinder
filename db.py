@@ -12,3 +12,4 @@ class Gigs(GigFinder):
     url = TextField(null=True)
     location = TextField(null=True)
     datetime = DateTimeField(null=True)
+    details = TextField(null=True)
