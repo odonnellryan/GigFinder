@@ -23,6 +23,11 @@ def gigs(provider=None):
     return jsonify({'gigs': result.data})
 
 
+@app.route('/search/<path:search_term>/')
+def search(search_term):
+    return 'texting'
+
+
 @app.route('/update_craigslist/')
 def update_craigslist():
     tasks.celery_craigslist_task.delay(craigslist_locations.locations)
