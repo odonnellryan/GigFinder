@@ -11,6 +11,8 @@ class GigFinder(Model):
 
 
 class Gigs(GigFinder):
+    # add website (for image/logo)
+    # add possible tags or category? for example, 'gigs, computers' for craigslist.
     website_supplied_id = TextField(null=True)
     name = TextField(null=True, default=None)
     url = TextField(null=True, unique=True)
