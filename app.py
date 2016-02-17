@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, render_template
 import settings
-from db import get_recent_gigs
+from db import get_recent_gigs, Gigs
 import tasks
 from json_schema import GigSchema
 from craigslist import  craigslist_locations
@@ -30,7 +30,8 @@ def search(search_term):
 
 @app.route('/update_craigslist/')
 def update_craigslist():
-    tasks.celery_craigslist_task.delay(craigslist_locations.locations)
+    gig = Gigs.create_or_get(url="some test string")
+    tasks.celery_craigslist_task(craigslist_locations.locations)
     return "Craigslist update process run!"
 
 if __name__ == "__main__":

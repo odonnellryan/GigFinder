@@ -1,0 +1,10 @@
+#main-body {
+    max-width: 1244px;
+    margin: 2em auto;
+}
+
+img.website-image {
+    display: block;
+    height: 32px;
+    margin: 0 auto;
+}
