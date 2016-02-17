@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 import settings
 from db import get_recent_gigs
 import tasks
@@ -7,6 +7,11 @@ from craigslist import  craigslist_locations
 
 app = Flask(__name__)
 app.config.from_object(settings)
+
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 
 @app.route('/gigs/<provider>/')
