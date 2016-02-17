@@ -29,13 +29,20 @@
                 <form class="navbar-form navbar-left" role="search">
                     <div class="form-group">
                         <input ng-model="searchText" type="text" class="form-control" placeholder="Search"
-                               ng-model-options='{ debounce: 1000 }' ng-change='search()'>
+                               ng-model-options='{ debounce: 500 }' ng-change='search()'>
                     </div>
                 </form>
             </div>
         </nav>
         <div class="col-xs-12">
             {% raw %}
+            <div ng-show="{{ gigs.error }}" class="row">
+                <div class="col-xs-12">
+                    <p>
+                        {{ gigs.error }}
+                    </p>
+                </div>
+            </div>
             <div class="row" ng-show="!craigslist" ng-repeat="x in gigs.gigs track by $index">
                 <div class="col-xs-3">
                     <img class="website-image" ng-src="/static/img/{{ x.website }}.png">

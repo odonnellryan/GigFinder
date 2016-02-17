@@ -29,7 +29,6 @@ def search(search_term):
 
 @app.route('/update_craigslist/')
 def update_craigslist():
-    gig = Gigs.create_or_get(url="some test string")
     tasks.celery_craigslist_task(craigslist_locations.locations)
     return "Craigslist update process run!"
 
