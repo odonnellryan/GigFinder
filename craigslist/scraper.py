@@ -3,7 +3,7 @@ from urllib import parse
 from bs4 import BeautifulSoup
 import settings
 import urllib
-
+import db
 
 def get_craigslist_post_details(url):
     response = requests.get(url)
@@ -33,13 +33,12 @@ def build_craigslist_data_object(soup, url, location, category):
 
 
 def craigslist_searcher(locations):
-    data = []
     for location in locations:
         url = "https://{}.craigslist.org/search/cpg/".format(location)
         response = requests.get(url)
         soup = BeautifulSoup(response.content, 'lxml')
-        data.extend(build_craigslist_data_object(soup, url, location, 'gigs, computer'))
-    return data
+        db.insert_into_db(build_craigslist_data_object(soup, url, location, 'gigs, computer'))
+
 
 def get_craigslist_cities():
     locations = {}

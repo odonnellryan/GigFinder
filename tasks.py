@@ -6,4 +6,4 @@ import time
 @c.task
 def celery_craigslist_task(craigslist_locations):
     for country in craigslist_locations:
-        insert_into_db(scraper.craigslist_searcher(craigslist_locations[country]))
+        scraper.craigslist_searcher(craigslist_locations[country])

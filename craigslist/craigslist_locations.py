@@ -150,4 +150,5 @@ all_locations = {
                                     'guadalajara', 'guanajuato', 'hermosillo', 'mazatlan', 'mexicocity',
                                     'monterrey', 'oaxaca', 'puebla', 'pv', 'tijuana', 'veracruz', 'yucatan',
                                     'managua', 'panama', 'lima', 'puertorico', 'montevideo', 'caracas',
-                                    'virgin']}
+                                    'virgin']
+}
