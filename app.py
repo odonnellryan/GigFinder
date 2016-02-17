@@ -1,9 +1,9 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, render_template
 import settings
-from db import get_recent_gigs, Gigs
+from db import get_recent_gigs, search_for_gigs, Gigs
 import tasks
-from json_schema import GigSchema
 from craigslist import  craigslist_locations
+from utils import jsonify_gigs
 
 app = Flask(__name__)
 app.config.from_object(settings)
@@ -18,14 +18,13 @@ def index():
 @app.route('/gigs/')
 def gigs(provider=None):
     gigs = get_recent_gigs()
-    schema = GigSchema(many=True)
-    result = schema.dump(list(gigs))
-    return jsonify({'gigs': result.data})
+    return jsonify_gigs(gigs)
 
 
 @app.route('/search/<path:search_term>/')
 def search(search_term):
-    return 'texting'
+    gigs = search_for_gigs(search_term)
+    return jsonify_gigs(gigs)
 
 
 @app.route('/update_craigslist/')

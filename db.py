@@ -22,8 +22,9 @@ class Gigs(GigFinder):
     details = TextField(null=True)
 
 
-def search_for_gigs():
-    return Gigs.select().where()
+def search_for_gigs(search_term):
+    return Gigs.select().where(Gigs.name.contains(search_term) | Gigs.website.contains(search_term) |
+                               Gigs.category.contains(search_term) | Gigs.details.contains(search_term))
 
 
 def get_recent_gigs():
@@ -34,9 +35,10 @@ def get_recent_gigs():
 def insert_into_db(data):
     with database.atomic():
         for item in data:
-            gig = Gigs.create_or_get(website_supplied_id=item['website_supplied_id'], name=item['name'],
-                                     url=item['url'],
-                                     location=item['location'], datetime=item['datetime'], details=item['details'],
-                                     website=item['website'], category=item['category'])
+            Gigs.create_or_get(website_supplied_id=item['website_supplied_id'], name=item['name'],
+                               url=item['url'],
+                               location=item['location'], datetime=item['datetime'], details=item['details'],
+                               website=item['website'], category=item['category'])
+
 
 # Gigs.create_table()

@@ -4,7 +4,7 @@
     var module = angular.module('gigFinder', []);
 
     module.service('gigService', function ($http) {
-        this.update_gigs = function () {
+        this.updateGigs = function () {
             return $http({
                 method: 'GET',
                 url: '/gigs/'
@@ -12,11 +12,26 @@
         }
     });
 
-    module.controller('gigController', ['$scope', 'gigService', function ($scope, gigService) {
-        $scope.gigs = "Gigs not updated";
-        gigService.update_gigs().then(function (response) {
-            $scope.gigs = response.data;
+    module.service('gigSearch', function ($http) {
+        this.search = function (searchTerm) {
+            return $http({
+                method: 'GET',
+                url: '/search/' + searchTerm
+            });
+        }
+    });
+
+    module.controller('gigController',
+        function ($scope, gigService, gigSearch) {
+            $scope.search = function () {
+                gigSearch.search($scope.searchText).then(function (response) {
+                    $scope.gigs = response.data;
+                });
+            };
+            $scope.gigs = "Gigs not updated";
+            gigService.updateGigs().then(function (response) {
+                $scope.gigs = response.data;
+            });
         });
-    }]);
 
 }());
