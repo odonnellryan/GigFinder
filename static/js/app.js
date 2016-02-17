@@ -3,7 +3,7 @@
 
     var module = angular.module('gigFinder', []);
 
-    module.service('gigService', function($http){
+    module.service('gigService', function ($http) {
         this.update_gigs = function () {
             return $http({
                 method: 'GET',
@@ -14,12 +14,9 @@
 
     module.controller('gigController', ['$scope', 'gigService', function ($scope, gigService) {
         $scope.gigs = "Gigs not updated";
-        gigService.update_gigs().then(function(response) {
-           $scope.gigs = response.data;
+        gigService.update_gigs().then(function (response) {
+            $scope.gigs = response.data;
         });
-    }
-    ]);
-
-
+    }]);
 
 }());
