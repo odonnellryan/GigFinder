@@ -2,7 +2,7 @@ from flask import Flask, render_template
 import settings
 from db import get_recent_gigs, search_for_gigs, Gigs
 import tasks
-from craigslist import  craigslist_locations
+from craigslist import  craigslist_locations, scraper
 from utils import jsonify_gigs
 
 app = Flask(__name__)
@@ -29,7 +29,7 @@ def search(search_term):
 
 @app.route('/update_craigslist/')
 def update_craigslist():
-    tasks.celery_craigslist_task(craigslist_locations.locations)
+    scraper.async_requests(craigslist_locations.locations['US'])
     return "Craigslist update process run!"
 
 if __name__ == "__main__":

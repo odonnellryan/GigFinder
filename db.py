@@ -29,7 +29,7 @@ def search_for_gigs(search_term):
 
 def get_recent_gigs():
     return Gigs.select().where(Gigs.datetime >
-                               (datetime.datetime.now() + datetime.timedelta(days=-7))).order_by(Gigs.datetime.asc())
+                               (datetime.datetime.now() + datetime.timedelta(days=-7))).order_by(Gigs.datetime.desc()).limit(200)
 
 
 def insert_into_db(data):
@@ -41,4 +41,4 @@ def insert_into_db(data):
                                website=item['website'], category=item['category'])
 
 
-# Gigs.create_table()
+#Gigs.create_table()
