@@ -1,7 +1,5 @@
-from celery_setup import c
-from db import insert_into_db
+from app import c
 from craigslist import scraper
-import time
 
 @c.task
 def celery_craigslist_task(craigslist_locations):

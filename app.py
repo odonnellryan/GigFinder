@@ -4,10 +4,28 @@ from db import get_recent_gigs, search_for_gigs, Gigs
 import tasks
 from craigslist import  craigslist_locations, scraper
 from utils import jsonify_gigs
+from celery import Celery
 
 app = Flask(__name__)
 app.config.from_object(settings)
 
+
+def make_celery(flask_app):
+    celery = Celery(flask_app.import_name, broker=flask_app.config['CELERY_BROKER_URL'])
+    celery.conf.update(flask_app.config)
+    task_base = celery.Task
+
+    class ContextTask(task_base):
+        abstract = True
+
+        def __call__(self, *args, **kwargs):
+            with flask_app.app_context():
+                return task_base.__call__(self, *args, **kwargs)
+
+    celery.Task = ContextTask
+    return celery
+
+c = make_celery(app)
 
 @app.route('/')
 def index():
