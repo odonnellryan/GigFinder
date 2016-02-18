@@ -16,9 +16,6 @@
                     <a class="navbar-brand" href="#">GigFinder</a>
                     <ul class="nav navbar-nav">
                         <li>
-                            <a class="navbar-link" href="#">Some Link</a>
-                        </li>
-                        <li>
                             <a class="navbar-link" ng-click="craigslist = !craigslist">
                                 <img class="logo-clicker" ng-class="craigslist ? 'selected' : 'notSelected'"
                                      src="/static/img/craigslist-small.png">
@@ -43,15 +40,17 @@
                     </p>
                 </div>
             </div>
-            <div class="row" ng-show="!craigslist" ng-repeat="x in gigs.gigs track by $index">
-                <div class="col-xs-3">
+            <div class="row gig-row" ng-show="!craigslist" ng-repeat="x in gigs.gigs track by $index">
+                <div class="col-xs-2">
                     <img class="website-image" ng-src="/static/img/{{ x.website }}.png">
                 </div>
-                <div class="col-xs-9">
+                <div class="col-xs-8 col-xs-offset-2 col-sm-offset-0 col-sm-5 ">
                     <p>
                         <a href="{{ x.url }}">{{ x.name }}</a>
                     </p>
                 </div>
+                <div class="col-xs-6 col-sm-3">{{ x.location }}</div>
+                <div class="col-xs-6 col-sm-2">{{ x.datetime }}</div>
             </div>
             {% endraw %}
         </div>

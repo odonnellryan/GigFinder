@@ -9,5 +9,5 @@ class GigSchema(Schema):
     name = fields.Str(required=False)
     url = fields.Str(required=False)
     location = fields.Str(required=False)
-    datetime = fields.DateTime(required=False)
+    datetime = fields.Str(required=False)
     details = fields.Str(required=False)

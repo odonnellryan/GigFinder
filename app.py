@@ -26,10 +26,10 @@ def search(search_term):
     gigs = search_for_gigs(search_term)
     return jsonify_gigs(gigs)
 
-
+@app.route('/update_craigslist/<site>/')
 @app.route('/update_craigslist/')
-def update_craigslist():
-    scraper.async_requests(craigslist_locations.locations['US'])
+def update_craigslist(site=None):
+    scraper.async_requests(craigslist_locations.locations['US'], site=site)
     return "Craigslist update process run!"
 
 if __name__ == "__main__":

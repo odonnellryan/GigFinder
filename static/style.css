@@ -1,12 +1,13 @@
 #main-body {
     max-width: 1244px;
-    margin: 2em auto;
+    margin: 0 auto;
+    padding: 2em;
 }
 
 img.website-image {
     display: block;
-    max-height: 32px;
     margin: 0 auto;
+    height: 2em;
 }
 
 img.logo-clicker {
@@ -22,4 +23,15 @@ img.selected {
 input, button {
     height: 60% !important;
     border-radius: 5px !important;
+}
+
+div.gig-row {
+    padding:1em;
+}
+
+div.gig-row * {
+}
+
+a:visited {
+    color: blueviolet;
 }

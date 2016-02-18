@@ -1,6 +1,5 @@
 import requests
 from requests_futures.sessions import FuturesSession
-from pprint import pprint
 from urllib import parse
 from bs4 import BeautifulSoup
 import settings
@@ -8,6 +7,8 @@ import urllib
 import db
 from db import Gigs
 from datetime import datetime, timedelta
+
+CRAIGSLIST_SITE = 'sof'
 
 def get_craigslist_post_details(url):
     response = requests.get(url)
@@ -36,9 +37,9 @@ def build_craigslist_data_object(soup, url, location, category):
     return data
 
 
-def craigslist_searcher(locations):
+def craigslist_searcher(locations, site=None):
     for location in locations:
-        url = "https://{}.craigslist.org/search/cpg/".format(location)
+        url = "https://{}.craigslist.org/search/{}/".format(location, (site or CRAIGSLIST_SITE))
         response = requests.get(url)
         soup = BeautifulSoup(response.content, 'lxml')
         db.insert_into_db(build_craigslist_data_object(soup, url, location, 'gigs, computer'))
@@ -62,16 +63,15 @@ def insert_callback(session, response):
     location = urllib.parse.urlparse(response.url).hostname.split('.')[0]
     print("Executing callback for:" + location)
     data = build_craigslist_data_object(soup, response.url, location, 'gigs, computer')
-    print(data)
     db.insert_into_db(data)
 
 
 
-def async_requests(locations):
+def async_requests(locations, site=None):
     session = FuturesSession()
-    check_date = datetime.now() + timedelta(days=-1)
+    check_date = datetime.now() + timedelta(hours=-4)
     for location in locations:
         gig = Gigs.select().where(Gigs.location.contains(location)).order_by(Gigs.datetime.desc()).first()
         if (gig is None) or ((datetime.strptime(gig.datetime, '%Y-%m-%d %H:%M') < check_date)):
-            url = "https://{}.craigslist.org/search/cpg/".format(location)
+            url = "https://{}.craigslist.org/search/{}/".format(location, (site or CRAIGSLIST_SITE))
             future = session.get(url, background_callback=insert_callback)
