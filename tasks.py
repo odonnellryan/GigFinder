@@ -1,4 +1,4 @@
-from app import c
+from gigfinder import c
 from craigslist import scraper
 
 @c.task
