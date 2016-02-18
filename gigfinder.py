@@ -1,7 +1,6 @@
 from flask import Flask, render_template
 import settings
 from db import get_recent_gigs, search_for_gigs, Gigs
-import tasks
 from craigslist import  craigslist_locations, scraper
 from utils import jsonify_gigs
 from celery import Celery
