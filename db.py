@@ -24,7 +24,7 @@ class Gigs(GigFinder):
 
 def search_for_gigs(search_term):
     return Gigs.select().where(Gigs.name.contains(search_term) | Gigs.website.contains(search_term) |
-                               Gigs.category.contains(search_term) | Gigs.details.contains(search_term))
+                               Gigs.category.contains(search_term) | Gigs.details.contains(search_term)).order_by(Gigs.datetime.desc()).limit(400)
 
 
 def get_recent_gigs():
