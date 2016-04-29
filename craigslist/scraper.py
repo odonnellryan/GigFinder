@@ -18,7 +18,7 @@ def get_craigslist_post_details(url):
 
 
 def build_craigslist_data_object(soup, url, location, category):
-    rows = soup.find('div', class_='content').find('span', class_='rows').find_all('p')
+    rows = soup.find('div', class_='content').find('div', class_='rows').find_all('p')
     data = []
     for row in rows:
         town = row.find('span', class_='pnr').find('small')
