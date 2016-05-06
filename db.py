@@ -22,14 +22,29 @@ class Gigs(GigFinder):
     details = TextField(null=True)
 
 
+class Gigs(GigFinder):
+    # add website (for image/logo)
+    # add possible tags or category? for example, 'gigs, computers' for craigslist.
+    website = TextField(null=True)
+    category = TextField(null=True)
+    website_supplied_id = TextField(null=True)
+    name = TextField(null=True, default=None)
+    url = TextField(null=True, unique=True)
+    location = TextField(null=True)
+    datetime = DateTimeField(null=True)
+    details = TextField(null=True)
+
+
 def search_for_gigs(search_term):
     return Gigs.select().where(Gigs.name.contains(search_term) | Gigs.website.contains(search_term) |
-                               Gigs.category.contains(search_term) | Gigs.details.contains(search_term)).order_by(Gigs.datetime.desc()).limit(400)
+                               Gigs.category.contains(search_term) | Gigs.details.contains(search_term)).order_by(
+        Gigs.datetime.desc()).limit(400)
 
 
 def get_recent_gigs():
     return Gigs.select().where(Gigs.datetime >
-                               (datetime.datetime.now() + datetime.timedelta(days=-7))).order_by(Gigs.datetime.desc()).limit(200)
+                               (datetime.datetime.now() + datetime.timedelta(days=-7))).order_by(
+        Gigs.datetime.desc()).limit(200)
 
 
 def insert_into_db(data):
@@ -41,5 +56,4 @@ def insert_into_db(data):
                                location=item['location'], datetime=item['datetime'], details=item['details'],
                                website=item['website'], category=item['category'])
 
-
-#Gigs.create_table()
+# Gigs.create_table()

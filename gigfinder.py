@@ -24,7 +24,7 @@ def make_celery(flask_app):
     celery.Task = ContextTask
     return celery
 
-c = make_celery(app)
+celery = make_celery(app)
 
 @app.route('/')
 def index():
@@ -46,7 +46,10 @@ def search(search_term):
 @app.route('/update_craigslist/<site>/')
 @app.route('/update_craigslist/')
 def update_craigslist(site=None):
-    scraper.async_requests(craigslist_locations.locations['US'], site=site)
+    @celery.task()
+    def some_func():
+        scraper.async_requests(craigslist_locations.locations['US'], site=site)
+    some_func.delay()
     return "Craigslist update process run!"
 
 if __name__ == "__main__":
