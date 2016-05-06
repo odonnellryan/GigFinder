@@ -1,10 +1,10 @@
 from flask import Flask, render_template
 import settings
-from db import get_recent_gigs, search_for_gigs, Gigs
-from craigslist.scraper import async_requests
-from craigslist.craigslist_locations import locations
+from db import get_recent_gigs, search_for_gigs
 from utils import jsonify_gigs
 from celery import Celery
+from craigslist.scraper import async_requests
+from craigslist.craigslist_locations import locations
 
 app = Flask(__name__)
 app.config.from_object(settings)
@@ -14,15 +14,25 @@ def make_celery(app):
     celery = Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'])
     celery.conf.update(app.config)
     TaskBase = celery.Task
+
     class ContextTask(TaskBase):
         abstract = True
+
         def __call__(self, *args, **kwargs):
             with app.app_context():
                 return TaskBase.__call__(self, *args, **kwargs)
+
     celery.Task = ContextTask
     return celery
 
+
 celery = make_celery(app)
+
+
+@celery.task(name="gigfinder.scrape")
+def scrape(site):
+    async_requests(locations['US'], site=site)
+
 
 @app.route('/')
 def index():
@@ -41,15 +51,13 @@ def search(search_term):
     gigs = search_for_gigs(search_term)
     return jsonify_gigs(gigs)
 
-@celery.task(name='gigfinder.run')
-def run(site):
-    async_requests(locations['US'], site=site)
 
 @app.route('/update_craigslist/<site>/')
 @app.route('/update_craigslist/')
 def update_craigslist(site=None):
-    run.delay(site)
+    scrape.delay(site)
     return "Craigslist update process run!"
+
 
 if __name__ == "__main__":
     port = 5555

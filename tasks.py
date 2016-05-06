@@ -1,0 +1,2 @@
+from gigfinder import celery
+

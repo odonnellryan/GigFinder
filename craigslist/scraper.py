@@ -61,7 +61,6 @@ def get_craigslist_cities():
 def insert_callback(session, response):
     soup = BeautifulSoup(response.content, 'lxml')
     location = urllib.parse.urlparse(response.url).hostname.split('.')[0]
-    print("Executing callback for:" + location)
     data = build_craigslist_data_object(soup, response.url, location, 'gigs, computer')
     db.insert_into_db(data)
 
@@ -71,7 +70,6 @@ def async_requests(locations, site=None):
     session = FuturesSession()
     check_date = datetime.now() + timedelta(hours=-4)
     for location in locations:
-        print("")
         gig = Gigs.select().where(Gigs.location.contains(location)).order_by(Gigs.datetime.desc()).first()
         if (gig is None) or ((datetime.strptime(gig.datetime, '%Y-%m-%d %H:%M') < check_date)):
             url = "https://{}.craigslist.org/search/{}/".format(location, (site or CRAIGSLIST_SITE))
