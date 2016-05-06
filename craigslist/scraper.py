@@ -70,6 +70,7 @@ def async_requests(locations, site=None):
     session = FuturesSession()
     check_date = datetime.now() + timedelta(hours=-4)
     for location in locations:
+        print(location)
         gig = Gigs.select().where(Gigs.location.contains(location)).order_by(Gigs.datetime.desc()).first()
         if (gig is None) or ((datetime.strptime(gig.datetime, '%Y-%m-%d %H:%M') < check_date)):
             url = "https://{}.craigslist.org/search/{}/".format(location, (site or CRAIGSLIST_SITE))
