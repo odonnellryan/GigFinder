@@ -1,7 +1,8 @@
 from flask import Flask, render_template
 import settings
 from db import get_recent_gigs, search_for_gigs, Gigs
-from craigslist import  craigslist_locations, scraper
+from craigslist.scraper import async_requests
+from craigslist.craigslist_locations import locations
 from utils import jsonify_gigs
 from celery import Celery
 
@@ -9,18 +10,15 @@ app = Flask(__name__)
 app.config.from_object(settings)
 
 
-def make_celery(flask_app):
-    celery = Celery(flask_app.import_name, broker=flask_app.config['CELERY_BROKER_URL'])
-    celery.conf.update(flask_app.config)
-    task_base = celery.Task
-
-    class ContextTask(task_base):
+def make_celery(app):
+    celery = Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'])
+    celery.conf.update(app.config)
+    TaskBase = celery.Task
+    class ContextTask(TaskBase):
         abstract = True
-
         def __call__(self, *args, **kwargs):
-            with flask_app.app_context():
-                return task_base.__call__(self, *args, **kwargs)
-
+            with app.app_context():
+                return TaskBase.__call__(self, *args, **kwargs)
     celery.Task = ContextTask
     return celery
 
@@ -43,13 +41,14 @@ def search(search_term):
     gigs = search_for_gigs(search_term)
     return jsonify_gigs(gigs)
 
+@celery.task(name='gigfinder.run')
+def run(site):
+    async_requests(locations['US'], site=site)
+
 @app.route('/update_craigslist/<site>/')
 @app.route('/update_craigslist/')
 def update_craigslist(site=None):
-    @celery.task()
-    def some_func():
-        scraper.async_requests(craigslist_locations.locations['US'], site=site)
-    some_func.delay()
+    run.delay(site)
     return "Craigslist update process run!"
 
 if __name__ == "__main__":
